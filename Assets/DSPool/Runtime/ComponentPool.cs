@@ -3,8 +3,8 @@ using UnityEngine;
 namespace DSPool;
 
 [DSPoolUsePrefab(typeof(GameObject))]
-public partial class MonoPool<TPoolElement> : ObjectPool<TPoolElement>
-    where TPoolElement : MonoBehaviour
+public partial class ComponentPool<TPoolElement> : ObjectPool<TPoolElement>
+    where TPoolElement : Component
 {
     protected override TPoolElement InstantiateElement()
     {

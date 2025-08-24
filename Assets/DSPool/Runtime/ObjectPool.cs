@@ -7,6 +7,8 @@ public abstract class ObjectPool<TPoolElement>
 {
     protected readonly Stack<TPoolElement> poolElements = new();
 
+    public int Count => this.poolElements.Count;
+
     public void Prewarm(int amount)
     {
         for (int i = 0; i < amount; i++)

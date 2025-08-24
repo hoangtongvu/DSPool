@@ -11,7 +11,9 @@ public abstract class ObjectPool<TPoolElement>
     {
         for (int i = 0; i < amount; i++)
         {
-            this.poolElements.Push(this.InstantiateElement());
+            var element = this.InstantiateElement();
+            this.OnPrewarm(element);
+            this.poolElements.Push(element);
         }
     }
 
@@ -33,6 +35,8 @@ public abstract class ObjectPool<TPoolElement>
     }
 
     protected abstract TPoolElement InstantiateElement();
+
+    protected virtual void OnPrewarm(TPoolElement element) { }
 
     protected virtual void OnRent(TPoolElement element) { }
 

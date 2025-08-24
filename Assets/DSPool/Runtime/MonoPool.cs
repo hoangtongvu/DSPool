@@ -11,6 +11,12 @@ public partial class MonoPool<TPoolElement> : ObjectPool<TPoolElement>
         return Object.Instantiate(this.Prefab).GetComponent<TPoolElement>();
     }
 
+    protected override void OnPrewarm(TPoolElement element)
+    {
+        base.OnPrewarm(element);
+        element.gameObject.SetActive(false);
+    }
+
     protected override void OnReturn(TPoolElement element)
     {
         base.OnReturn(element);

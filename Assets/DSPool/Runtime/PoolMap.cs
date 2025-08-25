@@ -6,14 +6,14 @@ public abstract class PoolMap<TPoolKey, TPool, TPoolElement>
     where TPoolElement : class
     where TPool : ObjectPool<TPoolElement>
 {
-    public readonly Dictionary<TPoolKey, TPool> poolMap = new();
-    private readonly Dictionary<TPoolElement, TPoolKey> rentedMap = new();
+    private readonly Dictionary<TPoolElement, TPoolKey> rentedToPoolKeyMap = new();
+    public readonly Dictionary<TPoolKey, TPool> Pools = new();
 
     public TPoolElement Rent(TPoolKey poolKey)
     {
-        var pool = this.poolMap[poolKey];
+        var pool = this.Pools[poolKey];
         var rentedElement = pool.Rent();
-        this.rentedMap.TryAdd(rentedElement, poolKey);
+        this.rentedToPoolKeyMap.TryAdd(rentedElement, poolKey);
 
         this.OnRent(poolKey, pool, rentedElement);
         return rentedElement;
@@ -21,10 +21,10 @@ public abstract class PoolMap<TPoolKey, TPool, TPoolElement>
 
     public void Return(TPoolElement poolElement)
     {
-        if (!this.rentedMap.TryGetValue(poolElement, out var poolKey))
+        if (!this.rentedToPoolKeyMap.TryGetValue(poolElement, out var poolKey))
             throw new System.Exception("Only can return rented instance from this pool");
 
-        var pool = this.poolMap[poolKey];
+        var pool = this.Pools[poolKey];
         this.OnReturn(poolKey, pool, poolElement);
         pool.Return(poolElement);
     }

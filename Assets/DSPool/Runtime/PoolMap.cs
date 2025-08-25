@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DSPool;
 
-public abstract class PoolMap<TPoolKey, TPool, TPoolElement>
+public class PoolMap<TPoolKey, TPool, TPoolElement>
     where TPoolElement : class
     where TPool : ObjectPool<TPoolElement>
 {

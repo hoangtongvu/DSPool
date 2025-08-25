@@ -15,7 +15,7 @@ public abstract class PoolMap<TPoolKey, TPool, TPoolElement>
         var rentedElement = pool.Rent();
         this.rentedMap.TryAdd(rentedElement, poolKey);
 
-        this.OnRent(poolKey, rentedElement);
+        this.OnRent(poolKey, pool, rentedElement);
         return rentedElement;
     }
 
@@ -24,12 +24,13 @@ public abstract class PoolMap<TPoolKey, TPool, TPoolElement>
         if (!this.rentedMap.TryGetValue(poolElement, out var poolKey))
             throw new System.Exception("Only can return rented instance from this pool");
 
-        this.OnReturn(poolKey, poolElement);
-        poolMap[poolKey].Return(poolElement);
+        var pool = this.poolMap[poolKey];
+        this.OnReturn(poolKey, pool, poolElement);
+        pool.Return(poolElement);
     }
 
-    protected virtual void OnRent(TPoolKey poolKey, TPoolElement poolElement) { }
+    protected virtual void OnRent(TPoolKey poolKey, TPool retrievedPool, TPoolElement poolElement) { }
 
-    protected virtual void OnReturn(TPoolKey poolKey, TPoolElement poolElement) { }
+    protected virtual void OnReturn(TPoolKey poolKey, TPool retrievedPool, TPoolElement poolElement) { }
 
 }

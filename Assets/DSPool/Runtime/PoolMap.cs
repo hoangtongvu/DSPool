@@ -11,7 +11,7 @@ public class PoolMap<TPoolKey, TPool, TPoolElement>
 
     public TPoolElement Rent(TPoolKey poolKey)
     {
-        var pool = this.Pools[poolKey];
+        var pool = this.GetPoolByKey(poolKey);
         var rentedElement = pool.Rent();
         this.rentedToPoolKeyMap.TryAdd(rentedElement, poolKey);
 
@@ -28,6 +28,8 @@ public class PoolMap<TPoolKey, TPool, TPoolElement>
         this.OnReturn(poolKey, pool, poolElement);
         pool.Return(poolElement);
     }
+
+    protected virtual TPool GetPoolByKey(TPoolKey poolKey) => this.Pools[poolKey];
 
     protected virtual void OnRent(TPoolKey poolKey, TPool retrievedPool, TPoolElement poolElement) { }
 

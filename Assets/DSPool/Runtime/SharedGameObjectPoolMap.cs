@@ -12,6 +12,7 @@ public partial class SharedGameObjectPoolMap : PoolMap<GameObject, GameObjectPoo
             this.CreateNewPool(poolKey, out pool);
         }
 
+        this.Pools.Add(poolKey, pool);
         return pool;
     }
 

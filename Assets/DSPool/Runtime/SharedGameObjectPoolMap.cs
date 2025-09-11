@@ -10,9 +10,9 @@ public partial class SharedGameObjectPoolMap : PoolMap<GameObject, GameObjectPoo
         if (!this.Pools.TryGetValue(poolKey, out var pool))
         {
             this.CreateNewPool(poolKey, out pool);
+            this.Pools.Add(poolKey, pool);
         }
 
-        this.Pools.Add(poolKey, pool);
         return pool;
     }
 

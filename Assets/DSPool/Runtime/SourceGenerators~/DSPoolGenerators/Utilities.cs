@@ -14,6 +14,9 @@ public static class Utilities
             if (parent is NamespaceDeclarationSyntax namespaceDeclaration)
                 return namespaceDeclaration.Name.ToString();
 
+            if (parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclaration)
+                return fileScopedNamespaceDeclaration.Name.ToString();
+
             parent = parent.Parent;
         }
 

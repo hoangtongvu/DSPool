@@ -70,5 +70,4 @@ namespace {transformedInfo.PoolNamespace}
 
         context.AddSource($"{transformedInfo.PoolNamespace}.{transformedInfo.PoolName}.PrefabProperty.g.cs", sourceCode);
     }
-
 }

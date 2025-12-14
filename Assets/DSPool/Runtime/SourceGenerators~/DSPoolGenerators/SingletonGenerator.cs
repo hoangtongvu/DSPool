@@ -66,10 +66,8 @@ namespace {transformedInfo.PoolNamespace}
         }}
 
 #if UNITY_EDITOR
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void ClearOnLoad() => DestroyInstance();
-
 #endif
     }}
 }}
@@ -77,5 +75,4 @@ namespace {transformedInfo.PoolNamespace}
 
         context.AddSource($"{transformedInfo.PoolNamespace}.{transformedInfo.PoolName}.Singleton.g.cs", sourceCode);
     }
-
 }

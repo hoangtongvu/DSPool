@@ -11,9 +11,9 @@
   
   <Target Name="CustomAfterBuild" AfterTargets="Build">
 	<ItemGroup>
-	  <_FilesToCopy Include="$(OutputPath)**\$(AssemblyName).dll"/>
+	  <_FilesToCopy Include="$(OutputPath)**\$(AssemblyName).dll" />
 	</ItemGroup>
-	<Copy SourceFiles="@(_FilesToCopy)" DestinationFolder="$(OutputPath)..\..\..\..\..\SourceGenerators"/>
+	<Copy SourceFiles="@(_FilesToCopy)" DestinationFolder="$(OutputPath)..\..\..\..\..\SourceGenerators" />
   </Target>
 
 </Project>

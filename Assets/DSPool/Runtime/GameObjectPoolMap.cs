@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace DSPool;
 
-[DSPoolSingleton]
-public partial class SharedGameObjectPoolMap : PoolMap<GameObject, GameObjectPool, GameObject>
+[DSPoolSharedInstanceAttribute]
+public class GameObjectPoolMap : PoolMap<GameObject, GameObjectPool, GameObject>
 {
     protected override GameObjectPool GetPoolByKey(GameObject poolKey)
     {

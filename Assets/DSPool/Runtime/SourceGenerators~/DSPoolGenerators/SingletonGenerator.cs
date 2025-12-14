@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using DSPoolGenerators.Constants;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
 using static DSPoolGenerators.Utilities;
 
 namespace DSPoolGenerators;
@@ -8,36 +8,22 @@ namespace DSPoolGenerators;
 [Generator]
 public class SingletonGenerator : IIncrementalGenerator
 {
-    private readonly record struct TransformedInfo(string PoolName, string PoolNamespace);
-
-    private static readonly HashSet<string> attributeNames =
-    [
-        "DSPoolSingleton",
-        "DSPool.DSPoolSingleton",
-        "DSPoolSingletonAttribute",
-        "DSPool.DSPoolSingletonAttribute",
-    ];
+    private readonly record struct TransformedInfo(string Name, string Namespace);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var provider = context.SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: static (syntaxNode, _) => IsTargetNode(syntaxNode),
+            .ForAttributeWithMetadataName(
+                DSPoolSingletonAttributeConstants.IDENTIFIER,
+                predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax,
                 transform: static (context, _) => Transform(context));
 
         context.RegisterSourceOutput(provider, Generate);
     }
 
-    private static bool IsTargetNode(SyntaxNode syntaxNode)
+    private static TransformedInfo Transform(GeneratorAttributeSyntaxContext context)
     {
-        return syntaxNode is AttributeSyntax attributeSyntax
-            && attributeNames.Contains(attributeSyntax.Name.ToString());
-    }
-
-    private static TransformedInfo Transform(GeneratorSyntaxContext context)
-    {
-        var attributeSyntax = (AttributeSyntax)context.Node;
-        var poolDeclaration = (ClassDeclarationSyntax)attributeSyntax.Parent?.Parent;
+        var poolDeclaration = (ClassDeclarationSyntax)context.TargetNode;
 
         return new(poolDeclaration.Identifier.ToString(), GetNamespace(poolDeclaration));
     }
@@ -53,17 +39,14 @@ public class SingletonGenerator : IIncrementalGenerator
 using System;
 using UnityEngine;
 
-namespace {transformedInfo.PoolNamespace}
+namespace {transformedInfo.Namespace}
 {{
-    public partial class {transformedInfo.PoolName}
+    public partial class {transformedInfo.Name}
     {{
-        private static {transformedInfo.PoolName} instance;
-        public static {transformedInfo.PoolName} Instance => instance ??= new();
+        private static {transformedInfo.Name} instance;
+        public static {transformedInfo.Name} Instance => instance ??= new();
 
-        public static void DestroyInstance()
-        {{
-            instance = null;
-        }}
+        public static void DestroyInstance() => instance = null;
 
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -73,6 +56,6 @@ namespace {transformedInfo.PoolNamespace}
 }}
 ";
 
-        context.AddSource($"{transformedInfo.PoolNamespace}.{transformedInfo.PoolName}.Singleton.g.cs", sourceCode);
+        context.AddSource($"{transformedInfo.Namespace}.{transformedInfo.Name}.Singleton.g.cs", sourceCode);
     }
 }

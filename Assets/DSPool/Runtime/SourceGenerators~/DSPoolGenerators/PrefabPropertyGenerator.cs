@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using DSPoolGenerators.Constants;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
 
 namespace DSPoolGenerators;
 
@@ -9,46 +9,33 @@ public class PrefabPropertyGenerator : IIncrementalGenerator
 {
     private readonly record struct TransformedInfo(string FullPrefabTypeName, string PoolName, string PoolDisplayName, string PoolNamespace);
 
-    private static readonly HashSet<string> attributeNames =
-    [
-        "DSPoolUsePrefab",
-        "DSPool.DSPoolUsePrefab",
-        "DSPoolUsePrefabAttribute",
-        "DSPool.DSPoolUsePrefabAttribute",
-    ];
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var provider = context.SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: static (syntaxNode, _) => IsTargetNode(syntaxNode),
+            .ForAttributeWithMetadataName(
+                DSPoolUsePrefabAttributeConstants.IDENTIFIER,
+                predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax,
                 transform: static (context, _) => Transform(context));
 
         context.RegisterSourceOutput(provider, Generate);
     }
 
-    private static bool IsTargetNode(SyntaxNode syntaxNode)
-    {
-        return syntaxNode is AttributeSyntax attributeSyntax
-            && attributeNames.Contains(attributeSyntax.Name.ToString());
-    }
-
-    private static TransformedInfo Transform(GeneratorSyntaxContext context)
+    private static TransformedInfo Transform(GeneratorAttributeSyntaxContext context)
     {
         var sm = context.SemanticModel;
-        var attributeSyntax = (AttributeSyntax)context.Node;
+        var attributeSyntax = (AttributeSyntax)context.Attributes[0].ApplicationSyntaxReference.GetSyntax();
 
         var attributeArgumentExpression = attributeSyntax.ArgumentList.Arguments[0].Expression;
         var prefabTypeInfo = sm.GetTypeInfo(((TypeOfExpressionSyntax)attributeArgumentExpression).Type);
 
-        var poolDeclaration = (ClassDeclarationSyntax)attributeSyntax.Parent?.Parent;
+        var poolDeclaration = context.TargetNode;
         var poolTypeInfo = sm.GetDeclaredSymbol(poolDeclaration);
 
         return new(
-            prefabTypeInfo.Type.ToDisplayString()
-            , poolTypeInfo.Name
-            , poolTypeInfo.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)
-            , poolTypeInfo.ContainingNamespace.ToDisplayString());
+            prefabTypeInfo.Type.ToDisplayString(),
+            poolTypeInfo.Name,
+            poolTypeInfo.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+            poolTypeInfo.ContainingNamespace.ToDisplayString());
     }
 
     private static void Generate(SourceProductionContext context, TransformedInfo transformedInfo)

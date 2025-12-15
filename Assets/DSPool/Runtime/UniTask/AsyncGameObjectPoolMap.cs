@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DSPool;
 
-[DSPoolSharedInstanceAttribute]
+[DSPoolSharedInstance]
 public class AsyncGameObjectPoolMap : AsyncPoolMap<GameObject, AsyncGameObjectPool, GameObject>
 {
     protected override AsyncGameObjectPool GetPoolByKey(GameObject poolKey)

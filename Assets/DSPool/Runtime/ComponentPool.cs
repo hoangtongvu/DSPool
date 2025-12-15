@@ -22,5 +22,4 @@ public partial class ComponentPool<TPoolElement> : ObjectPool<TPoolElement>
         base.OnReturn(element);
         element.gameObject.SetActive(false);
     }
-
 }

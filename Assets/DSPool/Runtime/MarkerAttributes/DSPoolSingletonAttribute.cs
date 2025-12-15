@@ -3,6 +3,6 @@
 namespace DSPool;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class DSPoolManualSingletonAttribute  : Attribute
+public sealed class DSPoolSingletonAttribute : Attribute
 {
 }

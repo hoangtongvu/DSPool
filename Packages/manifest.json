@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.github-joc0de.visual-studio-solution-generator": "https://github.com/hoangtongvu/UnityVisualStudioSolutionGenerator.git?path=/src/UnityVisualStudioSolutionGenerator/Assets#1.1.2",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.10.2",

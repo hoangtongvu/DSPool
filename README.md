@@ -17,7 +17,7 @@ To install, paste the following URL into Unity's **Package Manager**:
 4. Enter:
 
 ```bash
-https://github.com/hoangtongvu/DSPool.git?path=/Assets/DSPool#1.1.0
+https://github.com/hoangtongvu/DSPool.git?path=/Assets/DSPool#1.1.1
 ```
 
 ## Basic usage

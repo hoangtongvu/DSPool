@@ -51,6 +51,9 @@ public class SharedInstanceGenerator : IIncrementalGenerator
         sb.AppendLine("#pragma warning disable CS0114");
         sb.AppendLine("#pragma warning disable CS0108");
 
+        sb.AppendLine($"using UnityEngine;");
+        sb.AppendLine();
+
         sb.AppendLine($"namespace {info.Namespace};");
         sb.AppendLine();
 
@@ -58,8 +61,17 @@ public class SharedInstanceGenerator : IIncrementalGenerator
         sb.AppendLine("{");
         sb.Indent();
 
-        sb.AppendLine($"public static readonly {baseInstanceFullyQualifiedName} _instance = new();");
+        sb.AppendLine($"public static {baseInstanceFullyQualifiedName} _instance = new();");
         sb.AppendLine($"public static {baseInstanceFullyQualifiedName} Instance => _instance;");
+        sb.AppendLine();
+
+        sb.AppendLine("#if UNITY_EDITOR");
+        sb.AppendLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
+        sb.AppendLine("public static void ClearOnLoad() => DestroyInstance();");
+        sb.AppendLine("#endif");
+        sb.AppendLine();
+
+        sb.AppendLine("public static void DestroyInstance() => _instance = null!;");
         sb.AppendLine();
 
         foreach (var method in GetAllPublicInstanceMethods(typeSymbol))

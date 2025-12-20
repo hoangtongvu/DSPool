@@ -67,11 +67,8 @@ public class SharedInstanceGenerator : IIncrementalGenerator
 
         sb.AppendLine("#if UNITY_EDITOR");
         sb.AppendLine("[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]");
-        sb.AppendLine("public static void ClearOnLoad() => DestroyInstance();");
+        sb.AppendLine("public static void InitializeInstance() => _instance = new();");
         sb.AppendLine("#endif");
-        sb.AppendLine();
-
-        sb.AppendLine("public static void DestroyInstance() => _instance = null!;");
         sb.AppendLine();
 
         foreach (var method in GetAllPublicInstanceMethods(typeSymbol))
